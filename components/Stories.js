@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import React from "react";
 import tw from "tailwind-react-native-classnames";
-import data from "./data";
+import { data } from "./data";
 
 const Stories = () => {
   return (

@@ -1,4 +1,4 @@
-const data = [
+export const data = [
   {
     id: 1,
     image:
@@ -35,4 +35,52 @@ const data = [
     name: "daddy yankee",
   },
 ];
-export default data;
+
+export const postsData = [
+  {
+    id: 1,
+    user: data[0].name,
+    imageUrl:
+      "https://upload.wikimedia.org/wikipedia/commons/3/34/Elon_Musk_Royal_Society_%28crop2%29.jpg",
+    profileUrl:
+      "https://upload.wikimedia.org/wikipedia/commons/3/34/Elon_Musk_Royal_Society_%28crop2%29.jpg",
+    caption: "Let's goo🌟🌟🌟",
+    likes: 78,
+    comments: [
+      {
+        user: "elon musk",
+        comment: "very good elon",
+      },
+    ],
+  },
+  {
+    id: 2,
+    imageUrl:
+      "https://pbs.twimg.com/profile_images/669103856106668033/UF3cgUk4_400x400.jpg",
+    profileUrl:
+      "https://pbs.twimg.com/profile_images/669103856106668033/UF3cgUk4_400x400.jpg",
+    user: data[1].name,
+    caption: "Let's goo🌟🌟🌟",
+    likes: 150,
+  },
+  {
+    id: 3,
+    imageUrl:
+      "https://yt3.ggpht.com/JGFKbcaC0Wh8dU5GcY4KXESw6KPvoO2K5ptiNvGLrrWU7Vs9nhNHDnJofDWh-fQorjbg-VQw=s400-c-k-c0x00ffffff-no-rj",
+    profileUrl:
+      "https://yt3.ggpht.com/JGFKbcaC0Wh8dU5GcY4KXESw6KPvoO2K5ptiNvGLrrWU7Vs9nhNHDnJofDWh-fQorjbg-VQw=s400-c-k-c0x00ffffff-no-rj",
+    user: data[3].name,
+    caption: "Let's goo🌟🌟🌟",
+    likes: 789,
+    comments: [
+      {
+        user: "Alan walker",
+        comment: "very good alan",
+      },
+      {
+        user: "Alan walker",
+        comment: "very good alan",
+      },
+    ],
+  },
+];
