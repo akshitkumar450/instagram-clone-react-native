@@ -3,7 +3,8 @@ import React, { useState } from "react";
 import tw from "tailwind-react-native-classnames";
 import * as Yup from "yup";
 import { Formik } from "formik";
-
+import { useNavigation } from "@react-navigation/native";
+import validUrl from "valid-url";
 // validation for our text fields
 const uploadPostSchema = Yup.object().shape({
   postUrl: Yup.string().url().required("url is required"),
@@ -12,15 +13,22 @@ const uploadPostSchema = Yup.object().shape({
     .required("caption is required"),
 });
 
+const blankImg =
+  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWVWHaFOpTtemInCykPsJJI_Ud8vpEqSC7Ng&usqp=CAU";
+
 const PostForm = () => {
-  const [thumbnailUrl, setThunmbnailUrl] = useState(
-    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWVWHaFOpTtemInCykPsJJI_Ud8vpEqSC7Ng&usqp=CAU"
-  );
+  const navigation = useNavigation(blankImg);
+
+  const [thumbnailUrl, setThunmbnailUrl] = useState();
   return (
     <View>
       <Formik
         initialValues={{ caption: "", postUrl: "" }}
-        onSubmit={(values) => console.log(values)}
+        // when we submit the form it will run
+        onSubmit={(values) => {
+          console.log(values);
+          navigation.goBack();
+        }}
         validationSchema={uploadPostSchema}
         validateOnMount={true}>
         {/**form =>caption,url */}
@@ -41,7 +49,10 @@ const PostForm = () => {
                     height: 100,
                     resizeMode: "cover",
                   }}
-                  source={{ uri: thumbnailUrl }}
+                  source={{
+                    // show the image which we have uploaded if it is a vlaid url (stars with https://) else show blank image
+                    uri: validUrl.isUri(thumbnailUrl) ? thumbnailUrl : blankImg,
+                  }}
                 />
               </View>
               <View style={tw`flex-1 ml-2`}>

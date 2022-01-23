@@ -2,7 +2,9 @@ import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
 import React from "react";
 import tw from "tailwind-react-native-classnames";
 import insta from "../../assets/header-logo.png";
+import { useNavigation } from "@react-navigation/native";
 const Header = () => {
+  const navigation = useNavigation();
   return (
     <View style={tw`flex-row justify-between px-5`}>
       <View style={tw`flex-1 flex-row`}>
@@ -20,7 +22,7 @@ const Header = () => {
 
       <View style={tw`flex-row items-center justify-around`}>
         <View>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate("NewPost")}>
             <Image
               style={styles.icon}
               source={{
