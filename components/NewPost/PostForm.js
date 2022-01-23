@@ -4,6 +4,7 @@ import tw from "tailwind-react-native-classnames";
 import * as Yup from "yup";
 import { Formik } from "formik";
 
+// validation for our text fields
 const uploadPostSchema = Yup.object().shape({
   postUrl: Yup.string().url().required("url is required"),
   caption: Yup.string()
