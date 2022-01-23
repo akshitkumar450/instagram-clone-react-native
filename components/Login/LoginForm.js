@@ -1,4 +1,5 @@
 import {
+  Alert,
   Image,
   Pressable,
   Text,
@@ -12,7 +13,7 @@ import { useNavigation } from "@react-navigation/native";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import Validator from "email-validator";
-
+import { auth } from "../../firebase";
 // loginform validation schema
 const loginFormSchema = Yup.object().shape({
   email: Yup.string().email().required("An email address is required"),
@@ -24,11 +25,32 @@ const loginFormSchema = Yup.object().shape({
 const LoginForm = () => {
   const navigation = useNavigation();
 
+  const onLogin = async (email, password) => {
+    try {
+      const authUser = await auth.signInWithEmailAndPassword(email, password);
+      console.log("login 🌟🌟", authUser.user);
+    } catch (err) {
+      Alert.alert("error", err.message, [
+        {
+          text: "ok",
+          onPress: () => console.log("ok"),
+          style: "cancel",
+        },
+        {
+          // navigate to signup
+          text: "sign up",
+          onPress: () => navigation.navigate("SignUp"),
+        },
+      ]);
+    }
+  };
+
   return (
     <Formik
       initialValues={{ email: "", password: "" }}
       onSubmit={(values) => {
         console.log(values);
+        onLogin(values.email, values.password);
       }}
       validateOnMount={true}
       validationSchema={loginFormSchema}>
@@ -102,6 +124,7 @@ const LoginForm = () => {
             onChangeText={handleChange("password")}
             onBlur={handleBlur("password")}
             value={values.password}
+            onSubmitEditing={() => onLogin(values.email, values.password)}
           />
           <View style={tw`items-end mb-8`}>
             <Text style={tw`text-blue-500`}>Forgot passowrd ?</Text>

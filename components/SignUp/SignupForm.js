@@ -1,4 +1,5 @@
 import {
+  Alert,
   Image,
   Pressable,
   Text,
@@ -12,6 +13,7 @@ import { useNavigation } from "@react-navigation/native";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import Validator from "email-validator";
+import { auth } from "../../firebase";
 
 // signupform validation schema
 const singUpFormSchema = Yup.object().shape({
@@ -24,11 +26,38 @@ const singUpFormSchema = Yup.object().shape({
 
 const SignupForm = () => {
   const navigation = useNavigation();
+
+  const onSignUp = async (name, email, password) => {
+    try {
+      const authUser = await auth.createUserWithEmailAndPassword(
+        email,
+        password
+      );
+      await authUser.user.updateProfile({
+        displayName: name,
+      });
+      console.log("singup 🌟🌟", authUser.user);
+    } catch (err) {
+      Alert.alert("error", err.message, [
+        {
+          text: "ok",
+          onPress: () => console.log("ok"),
+          style: "cancel",
+        },
+        {
+          // navigate to login
+          text: "Login",
+          onPress: () => navigation.navigate("Login"),
+        },
+      ]);
+    }
+  };
   return (
     <Formik
       initialValues={{ name: "", email: "", password: "" }}
       onSubmit={(values) => {
         console.log(values);
+        onSignUp(values.name, values.email, values.password);
       }}
       validationSchema={singUpFormSchema}
       validateOnMount={true}>
