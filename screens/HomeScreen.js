@@ -5,6 +5,7 @@ import Header from "../components/Header";
 import Stories from "../components/Stories";
 import Post from "../components/Post";
 import { postsData } from "../components/data";
+import BottomTabs from "../components/BottomTabs";
 const HomeScreen = () => {
   return (
     <View style={tw`bg-black flex-1 pt-8`}>
@@ -15,6 +16,7 @@ const HomeScreen = () => {
           return <Post key={post.id} post={post} />;
         })}
       </ScrollView>
+      <BottomTabs />
     </View>
   );
 };
