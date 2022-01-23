@@ -45,7 +45,7 @@ const SignupForm = () => {
         style={tw`my-5 bg-gray-100 border-2 rounded-md border-gray-200 p-2 `}
       />
       <TextInput
-        keyboardType="text"
+        keyboardType="default"
         autoCapitalize="none"
         textContentType="password"
         placeholder="password"
