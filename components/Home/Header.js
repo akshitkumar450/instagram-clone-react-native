@@ -1,7 +1,7 @@
 import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
 import React from "react";
 import tw from "tailwind-react-native-classnames";
-import insta from "../assets/header-logo.png";
+import insta from "../../assets/header-logo.png";
 const Header = () => {
   return (
     <View style={tw`flex-row justify-between px-5`}>
