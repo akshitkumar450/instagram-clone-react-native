@@ -45,16 +45,16 @@ const LoginForm = () => {
     }
   };
   // if user is logged in then it will redirect to Home screen
-  useEffect(() => {
-    const unsub = auth.onAuthStateChanged((user) => {
-      if (user) {
-        navigation.replace("Home");
-      }
-    });
-    return () => {
-      unsub();
-    };
-  }, []);
+  // useEffect(() => {
+  //   const unsub = auth.onAuthStateChanged((user) => {
+  //     if (user) {
+  //       navigation.replace("Home");
+  //     }
+  //   });
+  //   return () => {
+  //     unsub();
+  //   };
+  // }, []);
   return (
     <Formik
       initialValues={{ email: "", password: "" }}

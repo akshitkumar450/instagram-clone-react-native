@@ -9,7 +9,7 @@ const Header = () => {
 
   const onSignOut = async () => {
     await auth.signOut();
-    navigation.navigate("Login");
+    // navigation.navigate("Login");
   };
   return (
     <View style={tw`flex-row justify-between px-5`}>
