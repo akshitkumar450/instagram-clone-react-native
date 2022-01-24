@@ -20,7 +20,7 @@ const Post = ({ post }) => {
       />
       <PostImage postUrl={post.postUrl} />
       <View style={tw`px-2`}>
-        <PostFooter />
+        <PostFooter likes={post.liked_by_users} id={post.id} />
         <PostCaption
           user={post.user}
           caption={post.caption}
@@ -85,32 +85,75 @@ const PostImage = ({ postUrl }) => (
   </View>
 );
 
-const PostFooter = () => (
-  <View>
-    <View style={tw`flex-row items-center mt-2 `}>
-      <View>
-        <TouchableOpacity>
-          <Image
-            style={[tw`mx-2`, styles.icon]}
-            source={{
-              uri: "https://img.icons8.com/fluency-systems-regular/60/ffffff/like--v1.png",
-            }}
-          />
-        </TouchableOpacity>
-      </View>
-      <View>
-        <TouchableOpacity>
-          <Image
-            style={styles.icon}
-            source={{
-              uri: "https://img.icons8.com/fluency-systems-regular/60/ffffff/facebook-messenger.png",
-            }}
-          />
-        </TouchableOpacity>
+const PostFooter = ({ likes, id }) => {
+  const likePost = async () => {
+    try {
+      // if the current user has not liked it,,means it will not be present in the likes_by_user array then add it for the specific id, else filter it out
+      await db
+        .collection("instaUsers")
+        .doc(auth.currentUser.email)
+        .collection("posts")
+        .doc(id)
+        .update({
+          liked_by_users: !likes.includes(auth.currentUser?.email) //this will be true/flase
+            ? [...likes, auth.currentUser.email]
+            : likes.filter((like) => like !== auth.currentUser.email),
+        });
+
+      // if (!likes.includes(auth.currentUser?.email)) {
+      //   await db
+      //     .collection("instaUsers")
+      //     .doc(auth.currentUser.email)
+      //     .collection("posts")
+      //     .doc(id)
+      //     .update({
+      //       liked_by_users: [...likes, auth.currentUser.email],
+      //     });
+      // } else {
+      //   await db
+      //     .collection("instaUsers")
+      //     .doc(auth.currentUser.email)
+      //     .collection("posts")
+      //     .doc(id)
+      //     .update({
+      //       liked_by_users: likes.filter(
+      //         (like) => like !== auth.currentUser.email
+      //       ),
+      //     });
+      // }
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+  return (
+    <View>
+      <View style={tw`flex-row items-center mt-2 `}>
+        <View>
+          <TouchableOpacity onPress={likePost}>
+            <Image
+              style={[tw`mx-2`, styles.icon]}
+              source={{
+                uri: likes.includes(auth.currentUser?.email)
+                  ? "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbhZzKKpoWlzKlxMnYPvfU1TwMsy3Z3gdWW6LoL7eEy0tAd2N4EcX4IIU4eSGu9f1GfqM&usqp=CAU"
+                  : "https://img.icons8.com/fluency-systems-regular/60/ffffff/like--v1.png",
+              }}
+            />
+          </TouchableOpacity>
+        </View>
+        <View>
+          <TouchableOpacity>
+            <Image
+              style={styles.icon}
+              source={{
+                uri: "https://img.icons8.com/fluency-systems-regular/60/ffffff/facebook-messenger.png",
+              }}
+            />
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
-  </View>
-);
+  );
+};
 
 const PostCaption = ({ caption, likes, user }) => (
   <View style={tw`mt-2`}>
