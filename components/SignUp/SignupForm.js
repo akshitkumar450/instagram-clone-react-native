@@ -13,7 +13,7 @@ import { useNavigation } from "@react-navigation/native";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import Validator from "email-validator";
-import { auth } from "../../firebase";
+import { auth, db } from "../../firebase";
 
 // signupform validation schema
 const singUpFormSchema = Yup.object().shape({
@@ -23,6 +23,13 @@ const singUpFormSchema = Yup.object().shape({
     .required()
     .min(6, "Your password has to have at least 8 Characters"),
 });
+
+// async function returns promise so we have to use await while calling the function
+const randomProfile = async () => {
+  const response = await fetch("https://randomuser.me/api");
+  const data = await response.json();
+  return data.results[0].picture.large;
+};
 
 const SignupForm = () => {
   const navigation = useNavigation();
@@ -35,8 +42,15 @@ const SignupForm = () => {
       );
       await authUser.user.updateProfile({
         displayName: name,
+        photoURL: await randomProfile(),
       });
       console.log("singup 🌟🌟", authUser.user);
+      await db.collection("instaUsers").add({
+        uid: authUser.user.uid,
+        photo: authUser.user.photoURL,
+        name: authUser.user.displayName,
+        email: authUser.user.email,
+      });
     } catch (err) {
       Alert.alert("error", err.message, [
         {

@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import tw from "tailwind-react-native-classnames";
 import { useNavigation } from "@react-navigation/native";
 import { Formik } from "formik";
@@ -44,7 +44,17 @@ const LoginForm = () => {
       ]);
     }
   };
-
+  // if user is logged in then it will redirect to Home screen
+  useEffect(() => {
+    const unsub = auth.onAuthStateChanged((user) => {
+      if (user) {
+        navigation.replace("Home");
+      }
+    });
+    return () => {
+      unsub();
+    };
+  }, []);
   return (
     <Formik
       initialValues={{ email: "", password: "" }}

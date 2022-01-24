@@ -1,14 +1,20 @@
 import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import tw from "tailwind-react-native-classnames";
 import insta from "../../assets/header-logo.png";
 import { useNavigation } from "@react-navigation/native";
+import { auth } from "../../firebase";
 const Header = () => {
   const navigation = useNavigation();
+
+  const onSignOut = async () => {
+    await auth.signOut();
+    navigation.navigate("Login");
+  };
   return (
     <View style={tw`flex-row justify-between px-5`}>
       <View style={tw`flex-1 flex-row`}>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={onSignOut}>
           <Image
             style={{
               width: 100,
@@ -33,7 +39,7 @@ const Header = () => {
         </View>
 
         <View>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate("Login")}>
             <Image
               style={[tw`mx-2`, styles.icon]}
               source={{
