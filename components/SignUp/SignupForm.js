@@ -45,7 +45,7 @@ const SignupForm = () => {
         photoURL: await randomProfile(),
       });
       console.log("singup 🌟🌟", authUser.user);
-      await db.collection("instaUsers").add({
+      await db.collection("instaUsers").doc(authUser.user.email).set({
         uid: authUser.user.uid,
         photo: authUser.user.photoURL,
         name: authUser.user.displayName,

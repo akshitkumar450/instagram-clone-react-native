@@ -5,6 +5,7 @@ import * as Yup from "yup";
 import { Formik } from "formik";
 import { useNavigation } from "@react-navigation/native";
 import validUrl from "valid-url";
+import { auth, db } from "../../firebase";
 // validation for our text fields
 const uploadPostSchema = Yup.object().shape({
   postUrl: Yup.string().url().required("url is required"),
@@ -27,6 +28,19 @@ const PostForm = () => {
         // when we submit the form it will run
         onSubmit={(values) => {
           console.log(values);
+          // adding the post to current logged in user
+          db.collection("instaUsers")
+            .doc(auth.currentUser.email)
+            .collection("posts")
+            .add({
+              caption: values.caption,
+              postUrl: values.postUrl,
+              user: auth.currentUser.displayName,
+              profile_picture: auth.currentUser.photoURL,
+              likes: 0,
+              liked_by_users: [],
+              comments: [],
+            });
           navigation.goBack();
         }}
         validationSchema={uploadPostSchema}
