@@ -1,22 +1,33 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React from "react";
+import {
+  Image,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import React, { useState } from "react";
 import tw from "tailwind-react-native-classnames";
+import { auth, db } from "../../firebase";
 
 const Post = ({ post }) => {
   return (
     <View style={tw`mt-5 `}>
-      <PostHeader profile={post.profileUrl} user={post.user} />
+      <PostHeader
+        profile={post.profile_picture}
+        user={post.user}
+        id={post.id}
+      />
       <PostImage postUrl={post.postUrl} />
       <View style={tw`px-2`}>
         <PostFooter />
         <PostCaption
           user={post.user}
           caption={post.caption}
-          likes={post.likes}
+          likes={post.liked_by_users.length}
         />
-        {post && post.comments && post.comments.length !== 0 && (
-          <PostComments comments={post.comments} />
-        )}
+
+        <PostComments comments={post.comments} id={post.id} />
       </View>
     </View>
   );
@@ -24,28 +35,41 @@ const Post = ({ post }) => {
 
 export default Post;
 
-const PostHeader = ({ profile, user }) => (
-  <View style={tw`flex-row items-center justify-between px-2`}>
-    <View style={tw`flex-row items-center flex-1`}>
-      <Image
-        style={{
-          width: 50,
-          height: 50,
-          borderRadius: 50,
-          borderWidth: 2,
-          borderColor: "orange",
-        }}
-        source={{
-          uri: profile,
-        }}
-      />
-      <Text style={tw`text-white ml-2`}>{user}</Text>
+const PostHeader = ({ profile, user, id }) => {
+  // deleting post
+  const deletePost = async () => {
+    await db
+      .collection("instaUsers")
+      .doc(auth.currentUser.email)
+      .collection("posts")
+      .doc(id)
+      .delete();
+  };
+  return (
+    <View style={tw`flex-row items-center justify-between px-2`}>
+      <View style={tw`flex-row items-center flex-1`}>
+        <Image
+          style={{
+            width: 50,
+            height: 50,
+            borderRadius: 50,
+            borderWidth: 2,
+            borderColor: "orange",
+          }}
+          source={{
+            uri: profile,
+          }}
+        />
+        <Text style={tw`text-white ml-2`}>{user}</Text>
+      </View>
+      <View>
+        <TouchableOpacity onPress={deletePost}>
+          <Text style={tw`text-white text-3xl`}>···</Text>
+        </TouchableOpacity>
+      </View>
     </View>
-    <View>
-      <Text style={tw`text-white text-3xl`}>···</Text>
-    </View>
-  </View>
-);
+  );
+};
 
 const PostImage = ({ postUrl }) => (
   <View style={tw`mt-2`}>
@@ -98,18 +122,51 @@ const PostCaption = ({ caption, likes, user }) => (
   </View>
 );
 
-const PostComments = ({ comments }) => {
+// adding the comment to specific post of id
+const PostComments = ({ comments, id }) => {
+  console.log(id);
+  const [comment, setComment] = useState("");
+  const addComment = () => {
+    db.collection("instaUsers")
+      .doc(auth.currentUser.email)
+      .collection("posts")
+      .doc(id)
+      .update({
+        comments: [
+          ...comments,
+          { user: auth.currentUser.displayName, comment },
+        ],
+      });
+    setComment("");
+  };
   return (
     <View>
-      <Text style={tw`text-gray-500 my-2`}>
-        View {comments.length > 1 ? "comments" : "comment"}
-      </Text>
-      {comments.map((comment, idx) => (
-        <View key={idx} style={tw`flex-row items-center`}>
-          <Text style={tw`text-white font-bold mr-2`}>{comment.user}</Text>
-          <Text style={tw`text-white`}>{comment.comment}</Text>
-        </View>
-      ))}
+      <View>
+        {comments && comments.length !== 0 && (
+          <>
+            <Text style={tw`text-gray-500 my-2`}>
+              View {comments.length > 1 ? "comments" : "comment"}
+            </Text>
+            {comments.map((comment, idx) => (
+              <View key={idx} style={tw`flex-row items-center`}>
+                <Text style={tw`text-white font-bold mr-2`}>
+                  {comment.user}
+                </Text>
+                <Text style={tw`text-white`}>{comment.comment}</Text>
+              </View>
+            ))}
+          </>
+        )}
+      </View>
+      {/**for writing comment */}
+      <TextInput
+        placeholder="comment"
+        style={tw`text-white`}
+        placeholderTextColor="gray"
+        onSubmitEditing={addComment}
+        onChangeText={(text) => setComment(text)}
+        value={comment}
+      />
     </View>
   );
 };
