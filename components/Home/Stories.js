@@ -6,32 +6,11 @@ import {
   TouchableOpacity,
   FlatList,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import tw from "tailwind-react-native-classnames";
 import { data } from "./data";
-import { auth, db } from "../../firebase";
 
 const Stories = () => {
-  const [posts, setPosts] = useState([]);
-  // getting posts corresponding to current logged in user only
-  useEffect(() => {
-    const unsub = db
-      .collection("instaUsers")
-      .doc(auth.currentUser.email)
-      .collection("posts")
-      .onSnapshot((snapshot) => {
-        let temp = [];
-        snapshot.docs.forEach((doc) => {
-          temp.push({ ...doc.data(), id: doc.id });
-        });
-        setPosts(temp);
-      });
-
-    return () => {
-      unsub();
-    };
-  }, []);
-  console.log(posts);
   return (
     <View style={tw`px-2 mt-5`}>
       <FlatList
