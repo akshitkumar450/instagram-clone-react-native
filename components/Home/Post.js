@@ -6,7 +6,7 @@ const Post = ({ post }) => {
   return (
     <View style={tw`mt-5 `}>
       <PostHeader profile={post.profileUrl} user={post.user} />
-      <PostImage image={post.imageUrl} />
+      <PostImage postUrl={post.postUrl} />
       <View style={tw`px-2`}>
         <PostFooter />
         <PostCaption
@@ -47,7 +47,7 @@ const PostHeader = ({ profile, user }) => (
   </View>
 );
 
-const PostImage = ({ image }) => (
+const PostImage = ({ postUrl }) => (
   <View style={tw`mt-2`}>
     <Image
       style={{
@@ -55,7 +55,7 @@ const PostImage = ({ image }) => (
         height: 350,
       }}
       source={{
-        uri: image,
+        uri: postUrl,
       }}
     />
   </View>

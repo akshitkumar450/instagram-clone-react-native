@@ -33,7 +33,7 @@ const HomeScreen = () => {
       <Header />
       <Stories />
       <ScrollView showsVerticalScrollIndicator={false} style={tw`mt-2`}>
-        {postsData.map((post) => {
+        {posts.map((post) => {
           return <Post key={post.id} post={post} />;
         })}
       </ScrollView>
